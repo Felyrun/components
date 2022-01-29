@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import Maid from "@rbxts/maid";
 import { CollectionService, RunService } from "@rbxts/services";
 import { t } from "@rbxts/t";
@@ -427,5 +428,22 @@ export class Components implements OnInit, OnStart, OnTick, OnPhysics, OnRender 
 		if (!reverseMapping) return [];
 
 		return [...reverseMapping] as never;
+	}
+
+	getAllComponentsOfType<T>(): T[];
+	getAllComponentsOfType<T>(componentSpecifier: Constructor<T>): T[];
+	getAllComponentsOfType<T>(componentSpecifier?: Constructor<T> | string): T[] {
+		const component = this.getComponentFromSpecifier(componentSpecifier);
+		assert(component, `Could not find component from specifier: ${componentSpecifier}`);
+
+		const components = new Array<T>();
+
+		this.reverseComponentsMapping.forEach((value, key) => {
+			if (key instanceof component) {
+				components.push([...value] as never);
+			}
+		});
+
+		return components;
 	}
 }
